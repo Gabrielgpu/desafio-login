@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth import authenticate, login, logout
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
@@ -6,6 +7,11 @@ from django.core.mail import EmailMessage
 from django.contrib import messages
 from .models import CustomUser
 from .forms import SignUpForm
+
+logout_required = user_passes_test(
+   lambda user: not user.is_authenticated,
+   login_url='menu_user'
+)
 
 
 def login_user(request):
@@ -44,12 +50,12 @@ def login_user(request):
         request, 
         "Login realizado com sucesso!"
       )
-      return redirect('login_user')
+      return redirect('menu_user')
   else:
       return render(request, 'login.html')
 
 
-
+@logout_required
 def register_user(request):
   if request.method == "POST":
     email = request.POST["email"]
@@ -74,7 +80,13 @@ def register_user(request):
   return render(request, 'register.html', {'form': form})
 
 
+@login_required(login_url="login_user")
 def logout_user(request):
   logout(request)
   messages.success(request, "Você fez o logout com sucesso!")
   return redirect('login_user')
+
+
+@login_required(login_url="login_user")
+def menu_user(request):
+   return render(request, "menu.html")
