@@ -72,3 +72,9 @@ def register_user(request):
     return render(request, 'register.html', {'form': form})
     
   return render(request, 'register.html', {'form': form})
+
+
+def logout_user(request):
+  logout(request)
+  messages.success(request, "Você fez o logout com sucesso!")
+  return redirect('login_user')
