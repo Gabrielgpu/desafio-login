@@ -48,7 +48,7 @@ Acesse a aplicação em: [http://127.0.0.1:8000](http://127.0.0.1:8000)
 
 ## 📜 Endpoints Principais
 - `/admin/` → Painel de administração do Django
-- `/login/` → Página de login
+- `/` → Página de login
 - `/register/` → Página de registro (envia um e-mail de confirmação no modo teste, que aparece no console)
 - `/menu/` → Página principal após login
 - `/logout/` → Rota para logout
