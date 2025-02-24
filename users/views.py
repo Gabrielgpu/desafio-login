@@ -2,8 +2,10 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
+from django.core.mail import EmailMessage
 from django.contrib import messages
 from .models import CustomUser
+from .forms import SignUpForm
 
 
 def login_user(request):
@@ -46,3 +48,27 @@ def login_user(request):
   else:
       return render(request, 'login.html')
 
+
+
+def register_user(request):
+  if request.method == "POST":
+    email = request.POST["email"]
+    form = SignUpForm(request.POST)
+    if form.is_valid():
+        form.save()
+        messages.success(request, "Cadastrado com sucesso!")
+
+        mail = EmailMessage(
+           subject="Bem-vindo ao Fidelity Pesquisas!",
+           body="Olá! Obrigado por se registrar em nosso site. Estamos felizes em tê-lo conosco.",
+           from_email="no-reply@fidelitypesquisas.com.br",
+           to=[email],
+        )
+        mail.send()
+
+        return redirect('login_user')
+  else:
+    form = SignUpForm()
+    return render(request, 'register.html', {'form': form})
+    
+  return render(request, 'register.html', {'form': form})
